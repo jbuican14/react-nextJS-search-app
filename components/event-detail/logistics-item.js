@@ -12,3 +12,5 @@ function LogisticsItem(props) {
     </li>
   );
 }
+
+export default LogisticsItem;
