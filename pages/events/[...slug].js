@@ -1,4 +1,9 @@
+import { Fragment } from 'react';
+s;
 import { useRouter } from 'next/router';
+import { getFilteredEvents } from '../../dummy-data';
+import EventsSearch from '../../components/events/events-search';
+import ResultsTitle from '../../components/events/results-title';
 
 function FilteredEventPage() {
   const router = useRouter();
@@ -24,10 +29,18 @@ function FilteredEventPage() {
     return <p>Invalid filter, please adjust your value</p>;
   }
 
+  const filteredEvents = getFilteredEvents({ year: numYear, month: numMonth });
+  if (!filteredEvents || filteredEvents.length === 0) {
+    return <p>No Events found. </p>;
+  }
+
+  const date = new Date(numYear, numMonth - 1);
+
   return (
-    <div>
-      <h1>Filtered Events page</h1>
-    </div>
+    <Fragment>
+      <ResultsTitle date={date} />
+      <EventList items={filteredEvents} />
+    </Fragment>
   );
 }
 

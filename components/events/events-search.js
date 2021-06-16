@@ -18,7 +18,7 @@ function EventsSearch(props) {
     <form className={classes.form} onSubmit={submitHandler}>
       <div className={classes.controls}>
         <div className={classes.control}>
-          <lable htmlFor="year">Year</lable>
+          <label htmlFor="year">Year</label>
           <select ref={yearInputRef}>
             <option value="2021">2021</option>
             <option value="2022">2022</option>
