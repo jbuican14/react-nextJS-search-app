@@ -1,15 +1,12 @@
 import { Fragment, useEffect, useState } from 'react';
-
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
 import { getFilteredEvents } from '../../helpers/api-util';
 import EventList from '../../components/events/event-list';
-import EventsSearch from '../../components/events/events-search';
 import ResultsTitle from '../../components/events/results-title';
 import Button from '../../components/ui/button';
 import ErrorAlert from '../../components/ui/error-alert';
-import { setLazyProp } from 'next/dist/next-server/server/api-utils';
 
 function FilteredEventPage(props) {
   const [loadedEvents, setLoadedEvents] = useState();
@@ -25,13 +22,13 @@ function FilteredEventPage(props) {
     if (data) {
       let events = [];
 
-      // return obj then loop
       for (const key in data) {
         events.push({
           id: key,
           ...data[key],
         });
       }
+
       setLoadedEvents(events);
     }
   }, [data]);
@@ -56,10 +53,10 @@ function FilteredEventPage(props) {
   ) {
     return (
       <Fragment>
+        <ErrorAlert>
+          <p>Invalid filter, please adjust your value</p>;
+        </ErrorAlert>
         <div className="center">
-          <ErrorAlert>
-            <p>Invalid filter, please adjust your value</p>;
-          </ErrorAlert>
           <Button link="/events">Show All Events </Button>
         </div>
       </Fragment>
@@ -74,16 +71,13 @@ function FilteredEventPage(props) {
     );
   });
 
-  // const filteredEvents = props.events;
-
   if (!filteredEvents || filteredEvents.length === 0) {
     return (
       <Fragment>
+        <ErrorAlert>
+          <p>No Events found. </p>
+        </ErrorAlert>
         <div className="center">
-          <ErrorAlert>
-            <p>No Events found. </p>
-          </ErrorAlert>
-
           <Button link="/events">Show All Events </Button>
         </div>
       </Fragment>
