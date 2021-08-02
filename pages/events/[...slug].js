@@ -1,6 +1,7 @@
 import { Fragment, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
+import Head from 'next/head';
 
 import { getFilteredEvents } from '../../helpers/api-util';
 import EventList from '../../components/events/event-list';
@@ -33,15 +34,37 @@ function FilteredEventPage(props) {
     }
   }, [data]);
 
+  let pageSeoHeader = (
+    <Head>
+      <title>Filtered Events</title>
+      <meta name="description" content="A list of filtered event" />
+    </Head>
+  );
+
   if (!loadedEvents) {
-    return <p className="center">Loading...</p>;
+    return (
+      <Fragment>
+        {pageSeoHeader}
+        <p className="center">Loading...</p>
+      </Fragment>
+    );
   }
-  // if (!filterData) return <p className="center">Loading...</p>;
+
   const filteredYear = filterData[0];
   const filteredMonth = filterData[1];
 
   const numYear = +filteredYear;
   const numMonth = +filteredMonth;
+
+  pageSeoHeader = (
+    <Head>
+      <title>Filtered Events</title>
+      <meta
+        name="description"
+        content={`All events for ${numMonth}/${numYear}.`}
+      />
+    </Head>
+  );
   if (
     isNaN(numYear) ||
     isNaN(numMonth) ||
@@ -53,6 +76,7 @@ function FilteredEventPage(props) {
   ) {
     return (
       <Fragment>
+        {pageSeoHeader}
         <ErrorAlert>
           <p>Invalid filter, please adjust your value</p>;
         </ErrorAlert>
@@ -74,6 +98,7 @@ function FilteredEventPage(props) {
   if (!filteredEvents || filteredEvents.length === 0) {
     return (
       <Fragment>
+        {pageSeoHeader}
         <ErrorAlert>
           <p>No Events found. </p>
         </ErrorAlert>
@@ -88,6 +113,7 @@ function FilteredEventPage(props) {
 
   return (
     <Fragment>
+      {pageSeoHeader}
       <ResultsTitle date={date} />
       <EventList items={filteredEvents} />
     </Fragment>
