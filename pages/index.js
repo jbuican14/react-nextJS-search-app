@@ -1,7 +1,8 @@
-import Head from 'next/head';
+import Head from "next/head";
 
-import { getFeaturedEvents } from '../helpers/api-util';
-import EventList from '../components/events/event-list';
+import {getFeaturedEvents} from "../helpers/api-util";
+import EventList from "../components/events/event-list";
+import NewsletterRegistration from "../components/input/newsletter-registration";
 
 function HomePage(props) {
   return (
@@ -13,6 +14,7 @@ function HomePage(props) {
           content="Find a lot of great events here provided by the best group"
         />
       </Head>
+      <NewsletterRegistration />
       <EventList items={props.events} />
     </div>
   );
