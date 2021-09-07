@@ -1,7 +1,7 @@
 export async function getAllEvents() {
   try {
     const response = await fetch(
-      'https://nextjs-demo-ef578-default-rtdb.firebaseio.com/events.json'
+      "https://next-js-demo-v2-default-rtdb.firebaseio.com//events.json"
     );
     const data = await response.json();
 
@@ -28,7 +28,7 @@ export async function getEventById(id) {
 }
 
 export async function getFilteredEvents(dateFilter) {
-  const { year, month } = dateFilter;
+  const {year, month} = dateFilter;
 
   const allEvents = await getAllEvents();
 
