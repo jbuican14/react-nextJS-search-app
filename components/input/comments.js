@@ -1,22 +1,49 @@
-import {useState, useEffect} from "react";
+import {useState, useEffect, useContext} from "react";
 
 import CommentList from "./comment-list";
 import NewComment from "./new-comment";
 import classes from "./comments.module.css";
+import NotificationContext from "../../store/notification-context";
 
 function Comments(props) {
   const {eventId} = props;
+  const notificationCtx = useContext(NotificationContext);
 
   const [showComments, setShowComments] = useState(false);
   const [comments, setComments] = useState([]);
 
   useEffect(() => {
     if (showComments) {
+      notificationCtx.showNotification({
+        title: "Loading comments...",
+        message: "Loading comments.",
+        status: "pending",
+      });
       fetch("/api/comments/" + eventId)
-        .then((response) => response.json())
+        .then((response) => {
+          // response.json()
+          if (response.ok) {
+            return response.json();
+          }
+          return response.json().then((data) => {
+            throw new Error(data.message || "Something went wrong");
+          });
+        })
         .then((data) => {
           // console.log("data", data);
+          notificationCtx.showNotification({
+            title: "Success!!",
+            message: "Successfully loaded  comments.",
+            status: "success",
+          });
           setComments(data.comments);
+        })
+        .catch((error) => {
+          notificationCtx.showNotification({
+            title: "Error",
+            message: error.message || "Opps something went wrong.",
+            status: "error",
+          });
         });
     }
   }, [showComments]);
@@ -31,6 +58,11 @@ function Comments(props) {
   function addCommentHandler(commentData) {
     // console.log(commentData);
     // send data to API
+    notificationCtx.showNotification({
+      title: "Saving comments...",
+      message: "Saving your new  comments.",
+      status: "pending",
+    });
     fetch("/api/comments/" + eventId, {
       method: "POST",
       body: JSON.stringify(commentData),
@@ -38,8 +70,28 @@ function Comments(props) {
         "Content-Type": "application/json",
       },
     })
-      .then((response) => response.json())
-      .then((data) => console.log("data", data));
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+        return response.json().then((data) => {
+          throw new Error(data.message || "Something went wrong");
+        });
+      })
+      .then((data) => {
+        notificationCtx.showNotification({
+          title: "Success!",
+          message: "Successfully submitted.",
+          status: "success",
+        });
+      })
+      .catch((error) => {
+        notificationCtx.showNotification({
+          title: "Error!",
+          message: error.message || "Error fetching for comments.",
+          status: "error",
+        });
+      });
   }
 
   return (
